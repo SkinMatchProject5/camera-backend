@@ -1,0 +1,16 @@
+# 최소 필수 패키지만
+fastapi
+uvicorn[standard]
+sqlalchemy
+pymysql
+pydantic
+pydantic-settings
+python-dotenv
+pillow
+opencv-python
+mediapipe
+numpy
+python-jose[cryptography]
+passlib[bcrypt]
+cryptography
+websockets

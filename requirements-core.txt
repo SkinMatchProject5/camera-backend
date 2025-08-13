@@ -1,0 +1,10 @@
+# 핵심 패키지만 (이미지 처리 제외)
+fastapi
+uvicorn
+sqlalchemy
+pymysql
+pydantic
+python-dotenv
+python-jose
+passlib
+cryptography
