@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Optional
 
 from app.websocket.manager import manager
-from app.services.face_detection_dummy import get_face_detector
+from app.services.face_detection import get_face_detector
 from app.core.security import jwt_handler
 from app.config.settings import settings
 
