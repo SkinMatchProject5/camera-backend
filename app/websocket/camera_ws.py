@@ -111,25 +111,39 @@ class CameraWebSocketHandler:
             # 얼굴 감지 수행
             detection_result = self.face_detector.detect_faces_from_base64(image_data)
             
+            # 안전한 값 추출 (기본값 포함)
+            detected = detection_result.get("detected", False)
+            confidence = detection_result.get("confidence", 0.0)
+            face_count = detection_result.get("face_count", 0)
+            ready_for_capture = detection_result.get("ready_for_capture", False)
+            feedback = detection_result.get("feedback", "얼굴을 카메라 앞에 위치시켜 주세요")
+            
+            # 에러가 있는 경우 처리
+            if "error" in detection_result:
+                print(f"Face detection error: {detection_result['error']}")
+                await self.send_error(connection_id, f"Face detection failed: {detection_result['error']}")
+                return
+            
             # 결과 전송
             response = {
                 "type": "face_detection_result",
                 "session_id": session_id,
-                "detected": detection_result["detected"],
-                "confidence": detection_result["confidence"],
-                "face_count": detection_result["face_count"],
-                "ready_for_capture": detection_result["ready_for_capture"],
-                "feedback": detection_result["feedback"],
+                "detected": detected,
+                "confidence": confidence,
+                "face_count": face_count,
+                "ready_for_capture": ready_for_capture,
+                "feedback": feedback,
                 "timestamp": datetime.now().isoformat()
             }
             
             await manager.send_personal_message(response, connection_id)
             
             # 자동 촬영 준비가 되면 카운트다운 시작
-            if detection_result["ready_for_capture"]:
+            if ready_for_capture:
                 await self.start_auto_countdown(connection_id, session_id)
                 
         except Exception as e:
+            print(f"Face detection handler error: {str(e)}")
             await self.send_error(connection_id, f"Face detection error: {str(e)}")
     
     async def handle_start_countdown(self, connection_id: str, session_id: str, data: dict):
